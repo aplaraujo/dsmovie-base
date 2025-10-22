@@ -2,8 +2,10 @@ package com.devsuperior.dsmovie.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -37,8 +39,9 @@ public class ScoreController {
                     @ApiResponse(description = "Unprocessable Entity", responseCode = "422")
             }
     )
+    @SecurityRequirement(name = "bearerAuth")
 	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CLIENT')")
-	@PutMapping(produces = "application/json")
+	@PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<MovieDTO> saveScore(@Valid @RequestBody ScoreDTO dto) {
 		MovieDTO movieDTO = service.saveScore(dto);
 		return ResponseEntity.ok().body(movieDTO);

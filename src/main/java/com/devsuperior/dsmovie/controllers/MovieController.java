@@ -4,10 +4,12 @@ import java.net.URI;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -41,7 +43,7 @@ public class MovieController {
                     @ApiResponse(description = "Ok", responseCode = "200")
             }
     )
-	@GetMapping(produces = "application/json")
+	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public Page<MovieDTO> findAll(
 			@RequestParam(value="title", defaultValue = "") String title, 
 			Pageable pageable) {
@@ -56,7 +58,7 @@ public class MovieController {
                     @ApiResponse(description = "Not Found", responseCode = "404"),
             }
     )
-	@GetMapping(value = "/{id}", produces = "application/json")
+	@GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public MovieDTO findById(@PathVariable Long id) {
 		return service.findById(id);
 	}
@@ -72,8 +74,9 @@ public class MovieController {
                     @ApiResponse(description = "Unprocessable Entity", responseCode = "422")
             }
     )
+    @SecurityRequirement(name = "bearerAuth")
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	@PostMapping(produces = "application/json")
+	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<MovieDTO> insert(@Valid @RequestBody MovieDTO dto) {
 		dto = service.insert(dto);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(dto.getId()).toUri();
@@ -92,8 +95,9 @@ public class MovieController {
                     @ApiResponse(description = "Unprocessable Entity", responseCode = "422")
             }
     )
+    @SecurityRequirement(name = "bearerAuth")
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	@PutMapping(value = "/{id}", produces = "application/json")
+	@PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<MovieDTO> update(@PathVariable Long id, @Valid @RequestBody MovieDTO dto) {
 		dto = service.update(id, dto);
 		return ResponseEntity.ok().body(dto);
@@ -111,8 +115,9 @@ public class MovieController {
                     @ApiResponse(description = "Unprocessable Entity", responseCode = "422")
             }
     )
+    @SecurityRequirement(name = "bearerAuth")
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	@DeleteMapping(value = "/{id}", produces = "application/json")
+	@DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<MovieDTO> delete(@PathVariable Long id) {
 		service.delete(id);
 		return ResponseEntity.noContent().build();
