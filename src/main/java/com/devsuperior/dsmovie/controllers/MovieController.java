@@ -2,6 +2,7 @@ package com.devsuperior.dsmovie.controllers;
 
 import java.net.URI;
 
+import com.devsuperior.dsmovie.dto.MovieGenreDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -122,4 +123,17 @@ public class MovieController {
 		service.delete(id);
 		return ResponseEntity.noContent().build();
 	}
+
+    // Versionamento de API MediaType
+    @GetMapping(produces = "application/vdn.aplaraujo.dsmovie-base-v1+json")
+    public Page<MovieGenreDTO> findAllV1(
+            @RequestParam(value="title", defaultValue = "") String title,
+            Pageable pageable) {
+        return service.findAllMovieGenre(title, pageable);
+    }
+
+    @GetMapping(value = "/{id}", produces = "application/vdn.aplaraujo.dsmovie-base-v1+json")
+    public MovieGenreDTO findByIdV1(@PathVariable Long id) {
+        return service.findByIdMovieGenre(id);
+    }
 }
